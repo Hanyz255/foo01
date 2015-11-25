@@ -67,3 +67,13 @@ $colorGreenAddButton:rgb(172,203,18);
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+/*
+.buttonToolBarLayout {
+    outline: solid gainsboro;
+    outline-offset: 8px;
+    margin: 8px 0 !important;
+}
+
+.buttonToolBarLayout .v-button {
+    font-size: 16px !important;
+}*/

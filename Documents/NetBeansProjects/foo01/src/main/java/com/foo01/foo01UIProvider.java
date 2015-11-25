@@ -17,8 +17,9 @@ public class foo01UIProvider extends UIProvider {
 
         if (overrideMobileUA() || mobileUserAgent || mobileParameter) {
             return foo01TouchKitUI.class;
-        } else {
-            return foo01FallbackUI.class;
+        } else {            
+            return foo01TouchKitUI.class;
+//            return foo01FallbackUI.class;
         }
     }
 

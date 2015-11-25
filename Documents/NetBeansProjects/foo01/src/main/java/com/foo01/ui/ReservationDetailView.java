@@ -13,13 +13,17 @@ import com.vaadin.addon.touchkit.gwt.client.vcom.DatePickerState.Resolution;
 import com.vaadin.addon.touchkit.ui.DatePicker;
 import com.vaadin.addon.touchkit.ui.HorizontalButtonGroup;
 import com.vaadin.addon.touchkit.ui.NavigationView;
+import com.vaadin.addon.touchkit.ui.Switch;
 import com.vaadin.addon.touchkit.ui.Toolbar;
 import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
 import com.vaadin.data.Property;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Page;
 import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.ui.slider.SliderOrientation;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
@@ -49,17 +53,40 @@ public class ReservationDetailView extends NavigationView {
     @Override
     protected final void onBecomingVisible() {
         getNavigationBar().setCaption("Detail Rezervace");
-        Toolbar tb = new Toolbar();
-        tb.setCaption("Hello");
-        tb.addComponent(new Button("testujeme"));
-        getNavigationManager().addComponent(tb);
         
-        final VerticalComponentGroup content = new VerticalComponentGroup();
-        content.addComponent(tb);
-        HorizontalButtonGroup buttons = new HorizontalButtonGroup();
-        buttons.addComponent(new Button("OK"));
-        buttons.addComponent(new Button("Cancel"));
-        content.addComponent(buttons);
+        
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setStyleName("buttonToolBarLayout");
+        buttonsLayout.setWidth("100%");
+
+        Button deleteButton = new Button();
+        deleteButton.setCaption("Smazat");
+        deleteButton.setWidth(null);
+        buttonsLayout.addComponent(deleteButton);
+        //buttonsLayout.setComponentAlignment(deleteButton, Alignment.MIDDLE_LEFT);
+
+        Label plug = new Label();
+        buttonsLayout.addComponent(plug);        
+        
+        // Add userinfo
+        Button saveButton = new Button();
+        saveButton.setCaption("Uložit");
+        saveButton.setWidth(null);
+        buttonsLayout.addComponent(saveButton);
+        buttonsLayout.setExpandRatio(plug, 1.0f);
+        //buttonsLayout.setComponentAlignment(saveButton, Alignment.MIDDLE_RIGHT);
+        
+        
+//        Toolbar tb = new Toolbar();
+//        setToolbar(tb);
+             
+        
+        
+        
+//        HorizontalButtonGroup buttons = new HorizontalButtonGroup();
+//        buttons.addComponent(new Button("OK"));
+//        buttons.addComponent(new Button("Cancel"));
+//        content.addComponent(buttons);
 
         List<Source> sourcesList = MockSource.mockSources();
 //        ComboBox combobox = new ComboBox("Zdroje");
@@ -70,8 +97,15 @@ public class ReservationDetailView extends NavigationView {
 //        combobox.setIcon(FontAwesome.ANGLE_DOWN);
 //        combobox.addItems(sourcesList);
 //        content.addComponent(combobox);
-        NativeSelect select = new NativeSelect("Select");
+        
+        HorizontalLayout sourceAndNameLayout = new HorizontalLayout();
+        sourceAndNameLayout.setWidth("100%");
+        
+        NativeSelect select = new NativeSelect();
         select.setNullSelectionAllowed(false);
+        System.out.println(Page.getCurrent().getBrowserWindowWidth());
+        String width = Page.getCurrent().getBrowserWindowWidth()/2.5 +"px";
+        select.setWidth(width);
         select.addItems(sourcesList);
 //        Collection<?> list;
 //        list = select.getItemIds();
@@ -81,27 +115,51 @@ public class ReservationDetailView extends NavigationView {
                 break;
             }
         }
+        sourceAndNameLayout.addComponent(select);
+        
+        Label plug2 = new Label();
+        sourceAndNameLayout.addComponent(plug2);
 
         Label name = new Label(reservation.getUser());
-
-        DatePicker dateFrom = new DatePicker("od");
+        name.setWidth(null);        
+        sourceAndNameLayout.addComponent(name);      
+        sourceAndNameLayout.setExpandRatio(plug2, 1.0f);
+        
+        DatePicker dateFrom = new DatePicker();
         dateFrom.setValue(reservation.getBeginning());
         dateFrom.setUseNative(true);
         dateFrom.setResolution(Resolution.TIME);
+        dateFrom.setWidth("100%");
 
-        DatePicker dateTo = new DatePicker("do");
+        DatePicker dateTo = new DatePicker();
         dateTo.setValue(reservation.getEnding());
         dateTo.setUseNative(true);
         dateTo.setResolution(Resolution.TIME);
+        dateTo.setWidth("100%");
 
-        final Slider horslider = new Slider("Pocet", 1, 10);
+        
+        HorizontalLayout sliderLayout = new HorizontalLayout();
+        sliderLayout.setWidth("100%");
+        sliderLayout.setSpacing(true);
+
+        Label sliderCaption = new Label("Počet");
+        sliderCaption.setWidth(null); 
+        sliderLayout.addComponent(sliderCaption);
+        
+        final Label horvalur = new Label();
+        horvalur.setWidth(null); 
+        sliderLayout.addComponent(horvalur); 
+        
+        final Slider horslider = new Slider(1, 10);
         horslider.setOrientation(SliderOrientation.HORIZONTAL);
         horslider.setValue(Double.valueOf(1));
         horslider.getState();
         horslider.getValue();
         horslider.setImmediate(true);
-
-        final Label horvalur = new Label();
+        horslider.setWidth("100%");
+        sliderLayout.addComponent(horslider);  
+        sliderLayout.setExpandRatio(horslider, 1.0f);
+        
         horvalur.setValue(String.valueOf(horslider.getValue()));
 
         horslider.addValueChangeListener(new Property.ValueChangeListener() {
@@ -112,31 +170,42 @@ public class ReservationDetailView extends NavigationView {
                 horvalur.setValue(String.valueOf(value));
             }
         });
-
-        CheckBox checkbox = new CheckBox("Schvaleno", true);
-
+        
+        HorizontalLayout switchLayout = new HorizontalLayout();
+        switchLayout.addComponent(new Label("Schváleno:"));
+        switchLayout.setSpacing(true);
+        Switch checkbox = new Switch(null, true);
+        switchLayout.addComponent(checkbox);
+        
         TextArea description = new TextArea();
         description.setWidth("100%");
         description.setImmediate(false);
-        description.setCaption("Popis");
+        description.setCaption("Popis:");
         description.setValue(reservation.getDescription());
         //description.setRequired(true);
         description.setRequiredError("Popis musí být zadán!");
         description.setNullRepresentation("");
         description.setReadOnly(true);
 //        description.setRows(0);
-        HorizontalLayout temp = new HorizontalLayout();
-        temp.setWidth("100%");
-        temp.addComponent(description);
 
-        content.addComponent(select);
-        content.addComponent(name);
+        final VerticalLayout content = new VerticalLayout();
+        content.setMargin(true);
+        content.setSpacing(true);
+        content.setStyleName(width);
+        content.addComponent(buttonsLayout);
+        content.addComponent(sourceAndNameLayout);
+//        content.addComponent(select);
+//        content.addComponent(name);
         content.addComponent(dateFrom);
-        content.addComponent(dateTo);
-        content.addComponent(horslider);
-        content.addComponent(horvalur);
-        content.addComponent(checkbox);
-        content.addComponent(temp);
+        content.addComponent(dateTo);         
+        
+        content.addComponent(sliderLayout);
+//        content.addComponent(horslider);
+//        content.addComponent(horvalur);
+//        content.addComponent(checkbox);
+        content.addComponent(switchLayout);
+        content.addComponent(description);
+        
 
         setContent(content);
     }
