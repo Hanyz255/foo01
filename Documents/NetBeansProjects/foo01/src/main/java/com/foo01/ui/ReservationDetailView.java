@@ -53,62 +53,38 @@ public class ReservationDetailView extends NavigationView {
     @Override
     protected final void onBecomingVisible() {
         getNavigationBar().setCaption("Detail Rezervace");
-        
-        
+
+        //buttony pod navbarem
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setStyleName("buttonToolBarLayout");
         buttonsLayout.setWidth("100%");
 
         Button deleteButton = new Button();
-        deleteButton.setCaption("Smazat");
+        deleteButton.setCaption("SMAZAT");
         deleteButton.setWidth(null);
         buttonsLayout.addComponent(deleteButton);
-        //buttonsLayout.setComponentAlignment(deleteButton, Alignment.MIDDLE_LEFT);
 
         Label plug = new Label();
-        buttonsLayout.addComponent(plug);        
-        
-        // Add userinfo
+        buttonsLayout.addComponent(plug);
+
         Button saveButton = new Button();
-        saveButton.setCaption("Uložit");
+        saveButton.setCaption("ULOŽIT");
         saveButton.setWidth(null);
         buttonsLayout.addComponent(saveButton);
         buttonsLayout.setExpandRatio(plug, 1.0f);
-        //buttonsLayout.setComponentAlignment(saveButton, Alignment.MIDDLE_RIGHT);
-        
-        
-//        Toolbar tb = new Toolbar();
-//        setToolbar(tb);
-             
-        
-        
-        
-//        HorizontalButtonGroup buttons = new HorizontalButtonGroup();
-//        buttons.addComponent(new Button("OK"));
-//        buttons.addComponent(new Button("Cancel"));
-//        content.addComponent(buttons);
-
         List<Source> sourcesList = MockSource.mockSources();
-//        ComboBox combobox = new ComboBox("Zdroje");
-//        combobox.setFilteringMode(FilteringMode.OFF);
-//        combobox.setInputPrompt("neco vyber");
-//        combobox.setTextInputAllowed(false);
-//        combobox.setItemCaptionMode(ItemCaptionMode.INDEX);
-//        combobox.setIcon(FontAwesome.ANGLE_DOWN);
-//        combobox.addItems(sourcesList);
-//        content.addComponent(combobox);
-        
+
+        //combobox na zdroje a jmeno uzivatele
         HorizontalLayout sourceAndNameLayout = new HorizontalLayout();
         sourceAndNameLayout.setWidth("100%");
-        
+        sourceAndNameLayout.setStyleName("sourceAndNameLayout");
+
         NativeSelect select = new NativeSelect();
         select.setNullSelectionAllowed(false);
         System.out.println(Page.getCurrent().getBrowserWindowWidth());
-        String width = Page.getCurrent().getBrowserWindowWidth()/2.5 +"px";
+        String width = Page.getCurrent().getBrowserWindowWidth() / 2.5 + "px";
         select.setWidth(width);
         select.addItems(sourcesList);
-//        Collection<?> list;
-//        list = select.getItemIds();
         for (Source s : sourcesList) {
             if (reservation.getSource().equals(s)) {
                 select.select(s);
@@ -116,40 +92,46 @@ public class ReservationDetailView extends NavigationView {
             }
         }
         sourceAndNameLayout.addComponent(select);
-        
+
         Label plug2 = new Label();
         sourceAndNameLayout.addComponent(plug2);
 
         Label name = new Label(reservation.getUser());
-        name.setWidth(null);        
-        sourceAndNameLayout.addComponent(name);      
+        name.setWidth(null);
+        sourceAndNameLayout.addComponent(name);
         sourceAndNameLayout.setExpandRatio(plug2, 1.0f);
-        
+
+        //datepickery
         DatePicker dateFrom = new DatePicker();
+        dateFrom.setStyleName("datePickerDetailView");
         dateFrom.setValue(reservation.getBeginning());
         dateFrom.setUseNative(true);
         dateFrom.setResolution(Resolution.TIME);
         dateFrom.setWidth("100%");
 
         DatePicker dateTo = new DatePicker();
+        dateTo.setStyleName("datePickerDetailView");
         dateTo.setValue(reservation.getEnding());
         dateTo.setUseNative(true);
         dateTo.setResolution(Resolution.TIME);
         dateTo.setWidth("100%");
 
-        
+        //layout pro slider a popisky
         HorizontalLayout sliderLayout = new HorizontalLayout();
+        sliderLayout.setStyleName("sliderLayout");
         sliderLayout.setWidth("100%");
         sliderLayout.setSpacing(true);
 
-        Label sliderCaption = new Label("Počet");
-        sliderCaption.setWidth(null); 
+        Label sliderCaption = new Label("Počet: ");
+        sliderCaption.addStyleName("sliderCaption");
+        sliderCaption.setWidth(null);
         sliderLayout.addComponent(sliderCaption);
-        
-        final Label horvalur = new Label();
-        horvalur.setWidth(null); 
-        sliderLayout.addComponent(horvalur); 
-        
+
+        final Label horvalue = new Label();
+        horvalue.setWidth("45px");
+        horvalue.setStyleName("value");
+        sliderLayout.addComponent(horvalue);
+
         final Slider horslider = new Slider(1, 10);
         horslider.setOrientation(SliderOrientation.HORIZONTAL);
         horslider.setValue(Double.valueOf(1));
@@ -157,27 +139,32 @@ public class ReservationDetailView extends NavigationView {
         horslider.getValue();
         horslider.setImmediate(true);
         horslider.setWidth("100%");
-        sliderLayout.addComponent(horslider);  
+        sliderLayout.addComponent(horslider);
         sliderLayout.setExpandRatio(horslider, 1.0f);
-        
-        horvalur.setValue(String.valueOf(horslider.getValue()));
+
+        horvalue.setValue(String.valueOf(horslider.getValue().intValue()));
 
         horslider.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                double value = horslider.getValue();
+                int value = horslider.getValue().intValue();
 
-                horvalur.setValue(String.valueOf(value));
+                horvalue.setValue(String.valueOf(value));
             }
         });
-        
+
+        //switch schvaleno
         HorizontalLayout switchLayout = new HorizontalLayout();
+        switchLayout.setStyleName("switchLayout");
         switchLayout.addComponent(new Label("Schváleno:"));
         switchLayout.setSpacing(true);
         Switch checkbox = new Switch(null, true);
         switchLayout.addComponent(checkbox);
-        
+
+        //popis rezervace
         TextArea description = new TextArea();
+        description.setStyleName("descriptionDetailView");
+
         description.setWidth("100%");
         description.setImmediate(false);
         description.setCaption("Popis:");
@@ -186,7 +173,7 @@ public class ReservationDetailView extends NavigationView {
         description.setRequiredError("Popis musí být zadán!");
         description.setNullRepresentation("");
         description.setReadOnly(true);
-//        description.setRows(0);
+        //description.setRows(0);
 
         final VerticalLayout content = new VerticalLayout();
         content.setMargin(true);
@@ -194,18 +181,12 @@ public class ReservationDetailView extends NavigationView {
         content.setStyleName(width);
         content.addComponent(buttonsLayout);
         content.addComponent(sourceAndNameLayout);
-//        content.addComponent(select);
-//        content.addComponent(name);
         content.addComponent(dateFrom);
-        content.addComponent(dateTo);         
-        
+        content.addComponent(dateTo);
+
         content.addComponent(sliderLayout);
-//        content.addComponent(horslider);
-//        content.addComponent(horvalur);
-//        content.addComponent(checkbox);
         content.addComponent(switchLayout);
         content.addComponent(description);
-        
 
         setContent(content);
     }

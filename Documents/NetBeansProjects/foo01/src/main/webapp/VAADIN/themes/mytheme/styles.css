@@ -60,20 +60,92 @@ $colorGreenAddButton:rgb(172,203,18);
     border-bottom-right-radius: 10px;
 }
 
-.v-select:after {
-    font-size: 25px !important;
-    background-color: gainsboro;
-    padding: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-/*
 .buttonToolBarLayout {
-    outline: solid gainsboro;
+    /*outline: solid gainsboro;
     outline-offset: 8px;
-    margin: 8px 0 !important;
+    margin: 8px 0 !important;*/
+    border-bottom: solid 5px gainsboro;
+    margin-bottom: 8px;
 }
 
 .buttonToolBarLayout .v-button {
     font-size: 16px !important;
-}*/
+    background-color: rgb(245,245,245);
+    box-shadow: none;
+}
+
+.sourceAndNameLayout .v-select-select{
+    font-size: 20px;
+    padding: 5px;
+    background-color: rgb(230,230,230);
+    border-radius: 5px;
+}
+
+.sourceAndNameLayout .v-label {
+    margin-top: 7px;
+}
+
+
+.sourceAndNameLayout .v-select:after {
+    font-size: 25px !important;
+    background-color: rgb(220,220,220);
+    padding: 4px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.datePickerDetailView {
+    background-color: rgb(230,230,230);
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 3px !important;
+}
+
+.datePickerDetailView:after {
+    background-color: rgb(220,220,220);
+    padding: 5px;
+    padding-right: 7px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.sliderLayout {
+    margin-top: 5px;
+}
+
+.sliderLayout .v-label-sliderCaption {
+    margin-top: 5px;
+}
+
+.sliderLayout .v-label-value {
+    text-align:center;
+    background-color: #00a0f0;
+    border-radius: 10px;
+    padding: 5px;
+    padding-right: 15px;
+    padding-left: 15px;
+    color: #FFFFFF;
+}
+
+.sliderLayout .v-slider {
+    padding-top: 5px;
+}
+
+.v-slider-base {
+
+    background-color: white !important;
+}
+
+.switchLayout {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.switchLayout .v-label {
+    margin-top: 3px;
+    margin-right: 10px;
+}
+
+.descriptionDetailView {
+    margin-top: 5px;
+}
