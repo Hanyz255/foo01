@@ -5,6 +5,7 @@
  */
 package com.foo01.ui;
 
+import com.foo01.components.ButtonToolBarLayout;
 import com.foo01.mock.MockSource;
 import com.foo01.mock.Reservation;
 import com.foo01.mock.Source;
@@ -50,31 +51,37 @@ public class ReservationDetailView extends NavigationView {
 
     private final Reservation reservation;
 
+    public Reservation getReservation() {
+        return reservation;
+    }
+
     @Override
     protected final void onBecomingVisible() {
         getNavigationBar().setCaption("Detail Rezervace");
 
+        
         //buttony pod navbarem
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.setStyleName("buttonToolBarLayout");
-        buttonsLayout.setWidth("100%");
-
-        Button deleteButton = new Button();
-        deleteButton.setCaption("SMAZAT");
-        deleteButton.setWidth(null);
-        buttonsLayout.addComponent(deleteButton);
-
-        Label plug = new Label();
-        buttonsLayout.addComponent(plug);
-
-        Button saveButton = new Button();
-        saveButton.setCaption("ULOŽIT");
-        saveButton.setWidth(null);
-        buttonsLayout.addComponent(saveButton);
-        buttonsLayout.setExpandRatio(plug, 1.0f);
-        List<Source> sourcesList = MockSource.mockSources();
+//        HorizontalLayout buttonsLayout = new HorizontalLayout();
+//        buttonsLayout.setStyleName("buttonToolBarLayout");
+//        buttonsLayout.setWidth("100%");
+//
+//        Button deleteButton = new Button();
+//        deleteButton.setCaption("SMAZAT");
+//        deleteButton.setWidth(null);
+//        buttonsLayout.addComponent(deleteButton);
+//
+//        Label plug = new Label();
+//        buttonsLayout.addComponent(plug);
+//
+//        Button saveButton = new Button();
+//        saveButton.setCaption("ULOŽIT");
+//        saveButton.setWidth(null);
+//        buttonsLayout.addComponent(saveButton);
+//        buttonsLayout.setExpandRatio(plug, 1.0f);  
+        
 
         //combobox na zdroje a jmeno uzivatele
+        List<Source> sourcesList = MockSource.mockSources();
         HorizontalLayout sourceAndNameLayout = new HorizontalLayout();
         sourceAndNameLayout.setWidth("100%");
         sourceAndNameLayout.setStyleName("sourceAndNameLayout");
@@ -178,8 +185,7 @@ public class ReservationDetailView extends NavigationView {
         final VerticalLayout content = new VerticalLayout();
         content.setMargin(true);
         content.setSpacing(true);
-        content.setStyleName(width);
-        content.addComponent(buttonsLayout);
+        content.addComponent(new ButtonToolBarLayout(this));
         content.addComponent(sourceAndNameLayout);
         content.addComponent(dateFrom);
         content.addComponent(dateTo);

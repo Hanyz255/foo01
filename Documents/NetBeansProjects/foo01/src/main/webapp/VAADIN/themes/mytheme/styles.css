@@ -83,6 +83,7 @@ $colorGreenAddButton:rgb(172,203,18);
 
 .sourceAndNameLayout .v-label {
     margin-top: 7px;
+    font-size: 18px;
 }
 
 
@@ -100,6 +101,10 @@ $colorGreenAddButton:rgb(172,203,18);
     margin-top: 5px;
     padding: 3px !important;
 }
+
+.v-touchkit-datepicker>input {
+    padding: 0 0 0 0 !important;
+}    
 
 .datePickerDetailView:after {
     background-color: rgb(220,220,220);
@@ -148,4 +153,12 @@ $colorGreenAddButton:rgb(172,203,18);
 
 .descriptionDetailView {
     margin-top: 5px;
+}
+
+.v-vertical>.v-slot, .v-vertical>.v-expand>.v-slot {
+    margin-bottom: 5px;
+}
+
+.v-window-contents {
+    padding: 5px !important;
 }
