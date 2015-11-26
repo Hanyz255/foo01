@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author Jan Konečný
  */
-public class ReservationDetailView extends NavigationView {
+public class ReservationView extends NavigationView {
 
     private final Reservation reservation;
 
@@ -201,7 +201,7 @@ public class ReservationDetailView extends NavigationView {
      *
      * @param r
      */
-    public ReservationDetailView(Reservation r) {
+    public ReservationView(Reservation r) {
         reservation = r;
     }
 

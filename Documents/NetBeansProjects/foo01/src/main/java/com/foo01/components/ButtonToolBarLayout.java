@@ -6,7 +6,7 @@
 package com.foo01.components;
 
 import com.foo01.foo01TouchKitUI;
-import com.foo01.ui.ReservationDetailView;
+import com.foo01.ui.ReservationView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -25,9 +25,9 @@ public class ButtonToolBarLayout extends HorizontalLayout {
     public ButtonToolBarLayout(final Object caller) {
         setUpLayout();
 
-        //caller = ReservationDetailView
-        if (ReservationDetailView.class == caller.getClass()) {
-            ReservationDetailView rdv = (ReservationDetailView) caller;
+        //caller = ReservationView
+        if (ReservationView.class == caller.getClass()) {
+            ReservationView rdv = (ReservationView) caller;
             rdv.getReservation().getSource();
 
             //button Smazat

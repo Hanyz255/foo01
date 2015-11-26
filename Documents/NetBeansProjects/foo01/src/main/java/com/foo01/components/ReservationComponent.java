@@ -8,7 +8,7 @@ package com.foo01.components;
 import com.foo01.foo01TouchKitUI;
 import com.foo01.mock.Reservation;
 import com.foo01.ui.FormView;
-import com.foo01.ui.ReservationDetailView;
+import com.foo01.ui.ReservationView;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.FontAwesome;
@@ -63,7 +63,7 @@ public class ReservationComponent extends HorizontalLayout {
             public void layoutClick(LayoutClickEvent event) {
                 //System.out.println(event.getClickedComponent().getParent().getId());
                 ((foo01TouchKitUI) UI.getCurrent()).NAVIGATIONMANAGER
-                        .navigateTo(new ReservationDetailView(r));                
+                        .navigateTo(new ReservationView(r));                
             }
         });
 
