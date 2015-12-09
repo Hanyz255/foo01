@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com</groupId>
     <artifactId>foo01</artifactId>
@@ -81,10 +81,28 @@
             <version>${vaadin.version}</version>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.ataco.erzeta</groupId>
+            <artifactId>erzeta-ejb</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>6.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-testbench</artifactId>
+            <version>4.0.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -127,7 +145,7 @@
                     <runTarget>http://localhost:8080/foo01</runTarget>
                     <extraJvmArgs>-Xmx1024M -Xss4024k -XX:MaxPermSize=128m</extraJvmArgs>
                     <modules>
-                      <module>com.foo01.gwt.foo01WidgetSet</module>
+                        <module>com.foo01.gwt.foo01WidgetSet</module>
                     </modules>
                 </configuration>
                 <executions>
@@ -207,11 +225,11 @@
                         <wtpversion>2.0</wtpversion>
                         <additionalProjectnatures>
                             <projectnature>com.vaadin.integration.eclipse.widgetsetNature</projectnature>
-                            </additionalProjectnatures>
-                            <additionalBuildcommands>
-                                <buildcommand>com.vaadin.integration.eclipse.widgetsetBuilder</buildcommand>
-                                <buildcommand>com.vaadin.integration.eclipse.addonStylesBuilder</buildcommand>
-                            </additionalBuildcommands>
+                        </additionalProjectnatures>
+                        <additionalBuildcommands>
+                            <buildcommand>com.vaadin.integration.eclipse.widgetsetBuilder</buildcommand>
+                            <buildcommand>com.vaadin.integration.eclipse.addonStylesBuilder</buildcommand>
+                        </additionalBuildcommands>
                     </configuration>
                 </plugin>
             </plugins>
