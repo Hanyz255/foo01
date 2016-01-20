@@ -27,31 +27,41 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import com.ataco.erzeta.ejb.BusinessException;
 import com.vaadin.testbench.elements.LabelElement;
+import com.vaadin.testbench.elements.PasswordFieldElement;
+import com.vaadin.testbench.elements.TextFieldElement;
 import java.util.List;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 
 /**
  *
  * @author Jan Konečný
  */
-//@Ignore
-@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.JVM) //Spousteni testovacich metod v abecednim poradi
 public class TestCaseErzeta1 extends TestBenchTestCase {
 
     private static final Logger log = Logger.getLogger(TestCaseErzeta1.class.getName());
-
-    private final String testedSourceName = "Zdroj 1";
+    private final String testedSourceName = "TestBench";
     private final int quantity = 3;
-    private final String testedDescription = "Testovací popis rezervace na zdroji 1";
-
+    private final String testedDescription = "Testovací popis rezervace na zdroji \"TestBench\"";
+    
     @Before
     public void setUp() throws Exception {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\konecny\\chromedriver.exe");
         //log.info(System.getProperty("webdriver.chrome.driver"));
         setDriver(new ChromeDriver());
         getDriver().get("http://localhost:8080/erzeta-ui-0.0.1");
+        
+        waitInMilliseconds(100);
+        TextFieldElement userNameTextField = $(TextFieldElement.class).caption("Uživatelské jméno").first();
+        userNameTextField.setValue("user1");
+        
+        PasswordFieldElement passwordTextField = $(PasswordFieldElement.class).caption("Heslo").first();
+        passwordTextField.setValue("user1");
+        
+        ButtonElement loginButton = $(ButtonElement.class).caption("Přihlásit").first();
+        loginButton.click();
+        waitInMilliseconds(1000);
     }
 
     @After
@@ -60,7 +70,7 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
     }
 
     @Test
-    public void testAddingNewReservation() {
+    public void testAddNewReservation() {
         Assert.assertTrue($(VerticalLayoutElement.class).$$(ButtonElement.class).exists());
         ButtonElement plusButton = $(VerticalLayoutElement.class).$$(ButtonElement.class).first();
         plusButton.click();
@@ -88,17 +98,13 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
         }
         actions.build().perform();
 
-        TestBenchElement validitySwitch = (TestBenchElement) findElement(By.cssSelector(".v-touchkit-switch"));
-        validitySwitch.click();
-        sleepInMilliseconds(100);
-
         TextAreaElement descriptionTextArea = $(TextAreaElement.class).caption("Popis:").first();
         descriptionTextArea.setValue(testedDescription);
 
         ButtonElement saveButton = $(ButtonElement.class).caption("ULOŽIT").first();
         saveButton.click();
 
-        sleepInMilliseconds(500);
+        waitInMilliseconds(500);
         testDataFromNewReservation();
 
         /*
@@ -121,48 +127,50 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
         SliderElement slider1 = $(SliderElement.class).first();
         Assert.assertEquals(Integer.toString(quantity), slider1.getValue());
 
-        Assert.assertNotNull(findElement(By.cssSelector(".v-touchkit-switch-off")));
-
+        LabelElement validityLabel = $(LabelElement.class).caption("KE SCHVÁLENÍ").first();
+        Assert.assertNotNull(validityLabel);
+        
         TextAreaElement descriptionTextArea = $(TextAreaElement.class).caption("Popis:").first();
         Assert.assertEquals(testedDescription, descriptionTextArea.getValue());
-
-        findElement(By.cssSelector(".v-touchkit-navbutton-back")).click();
     }
 
     @Test
-    public void testNewReservationFailed() {
+    public void testUnsuccessfulAddNewReservation() {
         Assert.assertTrue($(VerticalLayoutElement.class).$$(ButtonElement.class).exists());
         ButtonElement plusButton = $(VerticalLayoutElement.class).$$(ButtonElement.class).first();
         plusButton.click();
-        sleepInMilliseconds(500);
+        waitInMilliseconds(500);
 
         TextAreaElement descriptionTextArea = $(TextAreaElement.class).caption("Popis:").first();
         descriptionTextArea.setValue("");
 
         ButtonElement saveButton = $(ButtonElement.class).caption("ULOŽIT").first();
         saveButton.click();
-        sleepInMilliseconds(500);
+        waitInMilliseconds(500);
 
         Assert.assertNotNull(findElement(By.cssSelector(".v-Notification-error")));
     }
 
     @Test
-    public void deleteTestingReservation() {
-        sleepInMilliseconds(500);
+    public void testDeletingReservation() {
+        List<LabelElement> labelList = $(HorizontalLayoutElement.class).$$(LabelElement.class).all();
+        for (LabelElement l : labelList) {
+            if (l.getText().contains(testedDescription)) {
+                l.findElement(By.xpath("..")).findElement(By.xpath("..")).click(); //get parrent
+                break;
+            }
+        } 
 
-        HorizontalLayoutElement testingItem = $(HorizontalLayoutElement.class).get(1);
-        testingItem.click();
-        sleepInMilliseconds(500);
-
+        waitInMilliseconds(500);
         ButtonElement deleteButton = $(ButtonElement.class).caption("SMAZAT").first();
         deleteButton.click();
-        sleepInMilliseconds(500);
+        waitInMilliseconds(500);
 
         TestBenchElement yesButton = (TestBenchElement) findElements(By.cssSelector(".v-button")).get(4);
         yesButton.click();
     }
 
-    public void sleepInMilliseconds(int i) {
+    public void waitInMilliseconds(int i) {
         try {
             TimeUnit.MILLISECONDS.sleep(i);
         } catch (InterruptedException e) {
