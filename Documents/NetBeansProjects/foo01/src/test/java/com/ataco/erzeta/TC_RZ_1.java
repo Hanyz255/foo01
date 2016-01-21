@@ -26,7 +26,16 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import com.vaadin.testbench.elements.LabelElement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Level;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 /**
  *
@@ -36,10 +45,10 @@ import java.util.List;
 public class TC_RZ_1 extends TestBenchTestCase {
 
     private static final Logger log = Logger.getLogger(TC_RZ_1.class.getName());
-    private final String testedSourceName = "TestBench";
+    private static final String testedSourceName = "TestBench";
     private final int quantity = 3;
     private final String testedDescription = "Testovací popis rezervace na zdroji \"TestBench\"";
-    
+
     @Before
     public void setUp() throws Exception {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\konecny\\chromedriver.exe");
@@ -47,7 +56,7 @@ public class TC_RZ_1 extends TestBenchTestCase {
         setDriver(new ChromeDriver());
         getDriver().get("http://localhost:8080/erzeta-ui-0.0.1");
         waitInMilliseconds(100);
-        
+
         TC_RZ_2 testCase2 = new TC_RZ_2();
         testCase2.setDriver(this.getDriver());
         testCase2.testSuccessfulLogin();
@@ -65,7 +74,7 @@ public class TC_RZ_1 extends TestBenchTestCase {
         plusButton.click();
 
         NativeSelectElement sourceSelect = $(NativeSelectElement.class).first();
-        sourceSelect.selectByText(testedSourceName); //TODO: pridat dynamicky vyber zdroje z databaze nebo mock
+        sourceSelect.selectByText(testedSourceName);
 
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
@@ -104,8 +113,8 @@ public class TC_RZ_1 extends TestBenchTestCase {
                 l.findElement(By.xpath("..")).findElement(By.xpath("..")).click(); //get parrent
                 break;
             }
-        }       
-        
+        }
+
         NativeSelectElement sourceSelect = $(NativeSelectElement.class).first();
         Assert.assertEquals(testedSourceName, sourceSelect.getValue());
 
@@ -114,7 +123,7 @@ public class TC_RZ_1 extends TestBenchTestCase {
 
         LabelElement validityLabel = $(LabelElement.class).caption("KE SCHVÁLENÍ").first();
         Assert.assertNotNull(validityLabel);
-        
+
         TextAreaElement descriptionTextArea = $(TextAreaElement.class).caption("Popis:").first();
         Assert.assertEquals(testedDescription, descriptionTextArea.getValue());
     }
@@ -132,10 +141,11 @@ public class TC_RZ_1 extends TestBenchTestCase {
         ButtonElement saveButton = $(ButtonElement.class).caption("ULOŽIT").first();
         saveButton.click();
         waitInMilliseconds(500);
-        
+
         Assert.assertNotNull(findElement(By.cssSelector(".erzeta-field-error")));
     }
 
+    @Ignore
     @Test
     public void testDeletingReservation() {
         List<LabelElement> labelList = $(LabelElement.class).all();
@@ -144,7 +154,7 @@ public class TC_RZ_1 extends TestBenchTestCase {
                 l.findElement(By.xpath("..")).findElement(By.xpath("..")).click(); //get parrent
                 break;
             }
-        } 
+        }
 
         waitInMilliseconds(500);
         ButtonElement deleteButton = $(ButtonElement.class).caption("SMAZAT").first();
@@ -162,4 +172,36 @@ public class TC_RZ_1 extends TestBenchTestCase {
             log.warning(e.getMessage());
         }
     }
+
+    private static Connection connection;
+    private static Statement statement;
+
+    @BeforeClass
+    public static void databaseSetup() {
+        String url = "jdbc:mysql://localhost/erzeta?useUnicode=yes&amp;characterEncoding=UTF-8";
+        String username = "root";
+        String password = "root";
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+            statement = connection.createStatement();
+            statement.executeUpdate("INSERT INTO sources VALUES (50, true, 60, 5, 'zdroj pro TestBench', NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), '"+testedSourceName+"', false, false, 10, 60);");
+            System.out.println("setup hotov");
+        } catch (SQLException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @AfterClass
+    public static void cleanUp() {
+        try {
+            statement.executeUpdate("delete from reservations WHERE re_source_id=50");
+            statement.executeUpdate("delete from sources WHERE so_id=50");
+            
+            statement.close();
+            connection.close();
+        } catch (SQLException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+    }
+
 }
