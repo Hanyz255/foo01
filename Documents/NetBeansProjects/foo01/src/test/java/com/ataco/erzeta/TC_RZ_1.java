@@ -9,11 +9,9 @@ import com.vaadin.testbench.By;
 import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
-import com.vaadin.testbench.elements.HorizontalLayoutElement;
 import com.vaadin.testbench.elements.NativeSelectElement;
 import com.vaadin.testbench.elements.SliderElement;
 import com.vaadin.testbench.elements.TextAreaElement;
-import com.vaadin.testbench.elements.VerticalLayoutElement;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -28,19 +26,16 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import com.vaadin.testbench.elements.LabelElement;
-import com.vaadin.testbench.elements.PasswordFieldElement;
-import com.vaadin.testbench.elements.TextFieldElement;
 import java.util.List;
-import org.junit.BeforeClass;
 
 /**
  *
  * @author Jan Konečný
  */
 @FixMethodOrder(MethodSorters.JVM) //Spousteni testovacich metod v abecednim poradi
-public class TestCaseErzeta1 extends TestBenchTestCase {
+public class TC_RZ_1 extends TestBenchTestCase {
 
-    private static final Logger log = Logger.getLogger(TestCaseErzeta1.class.getName());
+    private static final Logger log = Logger.getLogger(TC_RZ_1.class.getName());
     private final String testedSourceName = "TestBench";
     private final int quantity = 3;
     private final String testedDescription = "Testovací popis rezervace na zdroji \"TestBench\"";
@@ -51,17 +46,11 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
         //log.info(System.getProperty("webdriver.chrome.driver"));
         setDriver(new ChromeDriver());
         getDriver().get("http://localhost:8080/erzeta-ui-0.0.1");
-        
         waitInMilliseconds(100);
-        TextFieldElement userNameTextField = $(TextFieldElement.class).caption("Uživatelské jméno").first();
-        userNameTextField.setValue("user1");
         
-        PasswordFieldElement passwordTextField = $(PasswordFieldElement.class).caption("Heslo").first();
-        passwordTextField.setValue("user1");
-        
-        ButtonElement loginButton = $(ButtonElement.class).caption("Přihlásit").first();
-        loginButton.click();
-        waitInMilliseconds(1000);
+        TC_RZ_2 testCase2 = new TC_RZ_2();
+        testCase2.setDriver(this.getDriver());
+        testCase2.testSuccessfulLogin();
     }
 
     @After
@@ -71,8 +60,8 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
 
     @Test
     public void testAddNewReservation() {
-        Assert.assertTrue($(VerticalLayoutElement.class).$$(ButtonElement.class).exists());
-        ButtonElement plusButton = $(VerticalLayoutElement.class).$$(ButtonElement.class).first();
+        Assert.assertNotNull(findElements(By.cssSelector(".v-button-float-plus-button")));
+        TestBenchElement plusButton = (TestBenchElement) findElements(By.cssSelector(".v-button-float-plus-button")).get(0);
         plusButton.click();
 
         NativeSelectElement sourceSelect = $(NativeSelectElement.class).first();
@@ -106,14 +95,10 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
 
         waitInMilliseconds(500);
         testDataFromNewReservation();
-
-        /*
-         findElement(By.cssSelector(".v-touchkit-navbutton-back")).click();
-         */
     }
 
     public void testDataFromNewReservation() {
-        List<LabelElement> labelList = $(HorizontalLayoutElement.class).$$(LabelElement.class).all();
+        List<LabelElement> labelList = $(LabelElement.class).all();
         for (LabelElement l : labelList) {
             if (l.getText().contains(testedDescription)) {
                 l.findElement(By.xpath("..")).findElement(By.xpath("..")).click(); //get parrent
@@ -136,8 +121,8 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
 
     @Test
     public void testUnsuccessfulAddNewReservation() {
-        Assert.assertTrue($(VerticalLayoutElement.class).$$(ButtonElement.class).exists());
-        ButtonElement plusButton = $(VerticalLayoutElement.class).$$(ButtonElement.class).first();
+        Assert.assertNotNull(findElements(By.cssSelector(".v-button-float-plus-button")));
+        TestBenchElement plusButton = (TestBenchElement) findElements(By.cssSelector(".v-button-float-plus-button")).get(0);
         plusButton.click();
         waitInMilliseconds(500);
 
@@ -147,13 +132,13 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
         ButtonElement saveButton = $(ButtonElement.class).caption("ULOŽIT").first();
         saveButton.click();
         waitInMilliseconds(500);
-
-        Assert.assertNotNull(findElement(By.cssSelector(".v-Notification-error")));
+        
+        Assert.assertNotNull(findElement(By.cssSelector(".erzeta-field-error")));
     }
 
     @Test
     public void testDeletingReservation() {
-        List<LabelElement> labelList = $(HorizontalLayoutElement.class).$$(LabelElement.class).all();
+        List<LabelElement> labelList = $(LabelElement.class).all();
         for (LabelElement l : labelList) {
             if (l.getText().contains(testedDescription)) {
                 l.findElement(By.xpath("..")).findElement(By.xpath("..")).click(); //get parrent
@@ -170,7 +155,7 @@ public class TestCaseErzeta1 extends TestBenchTestCase {
         yesButton.click();
     }
 
-    public void waitInMilliseconds(int i) {
+    public static void waitInMilliseconds(int i) {
         try {
             TimeUnit.MILLISECONDS.sleep(i);
         } catch (InterruptedException e) {
