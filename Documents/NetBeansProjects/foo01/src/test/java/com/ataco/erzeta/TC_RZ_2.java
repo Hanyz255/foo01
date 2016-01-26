@@ -5,7 +5,7 @@
  */
 package com.ataco.erzeta;
 
-import static com.ataco.erzeta.TC_RZ_1.waitInMilliseconds;
+import static com.ataco.erzeta.TC_RZ_1.sleep;
 import com.vaadin.testbench.By;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -23,17 +23,20 @@ import org.openqa.selenium.chrome.ChromeDriver;
  */
 public class TC_RZ_2 extends TestBenchTestCase {
     
+    private final String chromeDriverLocation = "C:\\Users\\konecny\\chromedriver.exe";
+    private final String serverURL = "http://localhost:8080/erzeta-ui-0.0.1";
+    
     private final String testedUserName = "user1";
     private final String testedPassword = "user1";
     
     @Before
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\konecny\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
         //log.info(System.getProperty("webdriver.chrome.driver"));
         setDriver(new ChromeDriver());
-        getDriver().get("http://localhost:8080/erzeta-ui-0.0.1");
+        getDriver().get(serverURL);
         
-        waitInMilliseconds(100);
+        sleep(100);
     }
     
     @After
@@ -51,7 +54,7 @@ public class TC_RZ_2 extends TestBenchTestCase {
         
         ButtonElement loginButton = $(ButtonElement.class).caption("Přihlásit").first();
         loginButton.click();
-        waitInMilliseconds(500);
+        sleep(500);
         
         Assert.assertNotNull(findElements(By.cssSelector(".v-touchkit-navbar")));
     }
