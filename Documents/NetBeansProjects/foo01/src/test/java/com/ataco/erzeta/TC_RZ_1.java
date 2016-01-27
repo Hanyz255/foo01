@@ -22,9 +22,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import com.vaadin.testbench.elements.LabelElement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,13 +32,11 @@ import java.util.List;
 import java.util.logging.Level;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 
 /**
  *
  * @author Jan Konečný
  */
-@FixMethodOrder(MethodSorters.JVM) //Spousteni testovacich metod v abecednim poradi
 public class TC_RZ_1 extends TestBenchTestCase {
 
     private final String chromeDriverLocation = "C:\\Users\\konecny\\chromedriver.exe";
@@ -55,14 +51,15 @@ public class TC_RZ_1 extends TestBenchTestCase {
     private static Statement statement;
     
     @BeforeClass
-    public static void databaseSetup() {
+    public static void databaseSetUp() {
+        TC_RZ_2.databaseSetUp();
         String url = "jdbc:mysql://localhost/erzeta?useUnicode=yes&amp;characterEncoding=UTF-8";
         String username = "root";
         String password = "root";
         try {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO sources VALUES (50, true, 60, 5, 'zdroj pro TestBench', NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), '"+testedSourceName+"', false, false, 10, 60);");
+            statement.executeUpdate("INSERT INTO sources VALUES (65535, true, 60, 5, 'zdroj pro TestBench', NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), '"+testedSourceName+"', false, false, 10, 60);");
         } catch (SQLException ex) {
             log.log(Level.SEVERE, null, ex);
         }
@@ -70,9 +67,10 @@ public class TC_RZ_1 extends TestBenchTestCase {
 
     @AfterClass
     public static void cleanUp() {
+        TC_RZ_2.cleanUp();
         try {
-            statement.executeUpdate("delete from reservations WHERE re_source_id=50");
-            statement.executeUpdate("delete from sources WHERE so_id=50");
+            statement.executeUpdate("delete from reservations WHERE re_source_id=65535");
+            statement.executeUpdate("delete from sources WHERE so_id=65535");
             
             statement.close();
             connection.close();
@@ -84,7 +82,6 @@ public class TC_RZ_1 extends TestBenchTestCase {
     @Before
     public void setUp() throws Exception {
         System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
-        //log.info(System.getProperty("webdriver.chrome.driver"));
         setDriver(new ChromeDriver());
         getDriver().get(serverURL);
         sleep(100);
