@@ -42,14 +42,14 @@ public class TC_RZ_1 extends TestBenchTestCase {
     private final String chromeDriverLocation = "C:\\Users\\konecny\\chromedriver.exe";
     private final String serverURL = "http://localhost:8080/erzeta-ui-0.0.1";
     private static final Logger log = Logger.getLogger(TC_RZ_1.class.getName());
-    
-    private static final String testedSourceName = "TestBench";
+
+    private static final String testedSourceName = "0TestBench";
     private final int quantity = 3;
     private final String testedDescription = "Testovací popis rezervace na zdroji \"TestBench\"";
 
     private static Connection connection;
     private static Statement statement;
-    
+
     @BeforeClass
     public static void databaseSetUp() {
         TC_RZ_2.databaseSetUp();
@@ -59,7 +59,7 @@ public class TC_RZ_1 extends TestBenchTestCase {
         try {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO sources VALUES (65535, true, 60, 5, 'zdroj pro TestBench', NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), '"+testedSourceName+"', false, false, 10, 60);");
+            statement.executeUpdate("INSERT INTO sources VALUES (65535, true, 60, 5, 'zdroj pro TestBench', NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), '" + testedSourceName + "', false, false, 10, 60);");
         } catch (SQLException ex) {
             log.log(Level.SEVERE, null, ex);
         }
@@ -71,14 +71,14 @@ public class TC_RZ_1 extends TestBenchTestCase {
         try {
             statement.executeUpdate("delete from reservations WHERE re_source_id=65535");
             statement.executeUpdate("delete from sources WHERE so_id=65535");
-            
+
             statement.close();
             connection.close();
         } catch (SQLException ex) {
             log.log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Before
     public void setUp() throws Exception {
         System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
@@ -98,9 +98,7 @@ public class TC_RZ_1 extends TestBenchTestCase {
 
     @Test
     public void testAddNewReservation() {
-        Assert.assertNotNull(findElements(By.cssSelector(".v-button-float-plus-button")));
-        TestBenchElement plusButton = (TestBenchElement) findElements(By.cssSelector(".v-button-float-plus-button")).get(0);
-        plusButton.click();
+        clickPlusButton();
 
         NativeSelectElement sourceSelect = $(NativeSelectElement.class).first();
         sourceSelect.selectByText(testedSourceName);
@@ -159,9 +157,7 @@ public class TC_RZ_1 extends TestBenchTestCase {
 
     @Test
     public void testUnsuccessfulAddNewReservation() {
-        Assert.assertNotNull(findElements(By.cssSelector(".v-button-float-plus-button")));
-        TestBenchElement plusButton = (TestBenchElement) findElements(By.cssSelector(".v-button-float-plus-button")).get(0);
-        plusButton.click();
+        clickPlusButton();
         sleep(500);
 
         TextAreaElement descriptionTextArea = $(TextAreaElement.class).caption("Popis:").first();
@@ -174,8 +170,16 @@ public class TC_RZ_1 extends TestBenchTestCase {
         Assert.assertNotNull(findElement(By.cssSelector(".erzeta-field-error")));
     }
 
+    private void clickPlusButton() {
+        Assert.assertNotNull(findElements(By.cssSelector(".v-nativebutton-float-plus-button")));
+        TestBenchElement plusButton = (TestBenchElement) findElements(By.cssSelector(".v-nativebutton-float-plus-button")).get(0);
+        plusButton.click();
+
+    }
+
     /**
      * Wait in milliseconds
+     *
      * @param i Milliseconds to sleep
      */
     public static void sleep(int i) {
