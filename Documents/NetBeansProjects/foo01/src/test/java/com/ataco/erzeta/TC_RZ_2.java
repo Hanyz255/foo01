@@ -39,7 +39,7 @@ public class TC_RZ_2 extends TestBenchTestCase {
     private static final String testedPassword = "testovaciHeslo";
     
     private static Connection connection;
-    private static Statement statement;
+    public static Statement statement;
     
     @BeforeClass
     public static void databaseSetUp() {
@@ -49,7 +49,7 @@ public class TC_RZ_2 extends TestBenchTestCase {
         try {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO users VALUES (65535, false, 'testovaci@email.cz', 'testovaciJmeno', 'testovaciPrijmeni', '"+testedUserName+"', true);");
+            statement.executeUpdate("INSERT INTO users VALUES (65535, true, 'testovaci@email.cz', 'testovaciJmeno', 'testovaciPrijmeni', '"+testedUserName+"', true);");
             statement.executeUpdate("INSERT INTO users_password VALUES ('"+testedUserName+"', 'f7NQRHrLuRNUrTae6ycQuF4/8f6vxw9lIfE4p0+KAAE=');");
         } catch (SQLException ex) {
             log.log(Level.SEVERE, null, ex);
@@ -82,6 +82,10 @@ public class TC_RZ_2 extends TestBenchTestCase {
         getDriver().quit();
     }
     
+    /**
+     * TC-RZ-2 (hlavní)
+     * Test úspěšného přihlášení do systému
+     */
     @Test
     public void testSuccessfulLogin() {
         TextFieldElement userNameTextField = $(TextFieldElement.class).caption("Uživatelské jméno").first();
@@ -97,6 +101,10 @@ public class TC_RZ_2 extends TestBenchTestCase {
         Assert.assertNotNull(findElements(By.cssSelector(".v-touchkit-navbar")));
     }
     
+    /**
+     * TC-RZ-2 (vedlejší)
+     * Neúspěšné_přihlášení_do_systému
+     */
     @Test
     public void testUnsuccessfulLogin() {
         TextFieldElement userNameTextField = $(TextFieldElement.class).caption("Uživatelské jméno").first();

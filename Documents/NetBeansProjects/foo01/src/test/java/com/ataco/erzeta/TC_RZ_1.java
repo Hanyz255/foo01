@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.vaadin.testbench.elements.LabelElement;
+import com.vaadin.testbench.elements.NativeButtonElement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -59,7 +60,7 @@ public class TC_RZ_1 extends TestBenchTestCase {
         try {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO sources VALUES (65535, true, 60, 5, 'zdroj pro TestBench', NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), '" + testedSourceName + "', false, false, 10, 60);");
+            statement.executeUpdate("INSERT INTO sources VALUES (65535, true, 60, 5, 'zdroj pro TestBench', NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), '" + testedSourceName + "', 10, 60, true, true, null, null);");
         } catch (SQLException ex) {
             log.log(Level.SEVERE, null, ex);
         }
@@ -96,6 +97,10 @@ public class TC_RZ_1 extends TestBenchTestCase {
         getDriver().quit();
     }
 
+    /**
+     * TC-RZ-3 (hlavní)
+     * Test na vytvoření nové rezervace.
+     */
     @Test
     public void testAddNewReservation() {
         clickPlusButton();
@@ -134,8 +139,8 @@ public class TC_RZ_1 extends TestBenchTestCase {
     }
 
     public void testDataFromNewReservation() {
-        List<LabelElement> labelList = $(LabelElement.class).all();
-        for (LabelElement l : labelList) {
+        List<NativeButtonElement> buttonList = $(NativeButtonElement.class).all();
+        for (NativeButtonElement l : buttonList) {
             if (l.getText().contains(testedDescription)) {
                 l.findElement(By.xpath("..")).findElement(By.xpath("..")).click(); //get parrent
                 break;
@@ -148,13 +153,17 @@ public class TC_RZ_1 extends TestBenchTestCase {
         SliderElement slider1 = $(SliderElement.class).first();
         Assert.assertEquals(Integer.toString(quantity), slider1.getValue());
 
-        LabelElement validityLabel = $(LabelElement.class).caption("KE SCHVÁLENÍ").first();
+        LabelElement validityLabel = $(LabelElement.class).caption("SCHVÁLENA").first();
         Assert.assertNotNull(validityLabel);
 
         TextAreaElement descriptionTextArea = $(TextAreaElement.class).caption("Popis:").first();
         Assert.assertEquals(testedDescription, descriptionTextArea.getValue());
     }
 
+    /**
+     * TC-RZ-2 (vedlejší)
+     * Neúspěšné_přidání_nové_rezervace
+     */
     @Test
     public void testUnsuccessfulAddNewReservation() {
         clickPlusButton();
@@ -170,11 +179,10 @@ public class TC_RZ_1 extends TestBenchTestCase {
         Assert.assertNotNull(findElement(By.cssSelector(".erzeta-field-error")));
     }
 
-    private void clickPlusButton() {
+    public void clickPlusButton() {
         Assert.assertNotNull(findElements(By.cssSelector(".v-nativebutton-float-plus-button")));
         TestBenchElement plusButton = (TestBenchElement) findElements(By.cssSelector(".v-nativebutton-float-plus-button")).get(0);
         plusButton.click();
-
     }
 
     /**
